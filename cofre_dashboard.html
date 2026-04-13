@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — Lapidar-Cofre</title>
+
+<script src="cofre_core.js"></script>
+<script src="cofre_memoria.js"></script>
+<script src="cofre_registro.js"></script>
+
+<style>
+body{
+margin:0;
+font-family:Georgia, serif;
+background:linear-gradient(135deg,#f7f3ea,#e8dfcf);
+color:#2d2d2d;
+}
+
+header{
+background:#3e2f1c;
+color:white;
+padding:22px;
+text-align:center;
+font-size:30px;
+}
+
+.subtitulo{
+font-size:15px;
+margin-top:6px;
+opacity:0.92;
+}
+
+.container{
+max-width:1100px;
+margin:auto;
+padding:30px 20px;
+box-sizing:border-box;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+gap:18px;
+}
+
+.card{
+background:white;
+border-radius:12px;
+padding:22px;
+box-shadow:0 6px 18px rgba(0,0,0,0.08);
+}
+
+h2{
+margin-top:0;
+color:#3e2f1c;
+font-size:20px;
+}
+
+.info{
+line-height:1.7;
+white-space:pre-wrap;
+word-break:break-word;
+}
+
+.botoes{
+margin-top:24px;
+background:white;
+border-radius:12px;
+padding:22px;
+box-shadow:0 6px 18px rgba(0,0,0,0.08);
+}
+
+button{
+background:#3e2f1c;
+color:white;
+border:none;
+padding:12px 18px;
+margin:8px 8px 0 0;
+border-radius:6px;
+cursor:pointer;
+font-family:Georgia, serif;
+font-size:15px;
+}
+
+button:hover{
+background:#5b452b;
+}
+
+.output{
+margin-top:24px;
+background:#fff;
+border-radius:12px;
+padding:22px;
+box-shadow:0 6px 18px rgba(0,0,0,0.08);
+white-space:pre-wrap;
+word-break:break-word;
+line-height:1.6;
+min-height:180px;
+}
+
+.back{
+display:inline-block;
+margin-top:24px;
+color:#3e2f1c;
+cursor:pointer;
+font-weight:bold;
+}
+
+.back:hover{
+text-decoration:underline;
+}
+
+footer{
+text-align:center;
+margin-top:40px;
+font-size:13px;
+opacity:0.75;
+padding-bottom:20px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+Dashboard — Lapidar-Cofre
+<div class="subtitulo">
+Painel técnico interno do gateway de ingestão estrutural do ecossistema
+</div>
+</header>
+
+<div class="container">
+
+<div class="grid">
+
+<div class="card">
+<h2>Estado do Núcleo</h2>
+<div class="info" id="estadoNucleo">Carregando...</div>
+</div>
+
+<div class="card">
+<h2>Identificação da Obra</h2>
+<div class="info" id="estadoObra">Carregando...</div>
+</div>
+
+<div class="card">
+<h2>Classificação Estrutural</h2>
+<div class="info" id="estadoEstrutura">Carregando...</div>
+</div>
+
+<div class="card">
+<h2>Pré-textuais</h2>
+<div class="info" id="estadoPreTextuais">Carregando...</div>
+</div>
+
+<div class="card">
+<h2>Memória do Módulo</h2>
+<div class="info" id="estadoMemoria">Carregando...</div>
+</div>
+
+<div class="card">
+<h2>Registro e Auditoria</h2>
+<div class="info" id="estadoRegistro">Carregando...</div>
+</div>
+
+<div class="card">
+<h2>Texto Limpo</h2>
+<div class="info" id="estadoTextoLimpo">Carregando...</div>
+</div>
+
+<div class="card">
+<h2>Status Institucional</h2>
+<div class="info" id="estadoInstitucional">Carregando...</div>
+</div>
+
+</div>
+
+<div class="botoes">
+<h2>Controles do Dashboard</h2>
+
+<button onclick="atualizarDashboard()">Atualizar dashboard</button>
+<button onclick="verResumoCompleto()">Ver resumo completo</button>
+<button onclick="verCoreCompleto()">Ver núcleo completo</button>
+<button onclick="verMemoriaCompleta()">Ver memória completa</button>
+<button onclick="verRegistroCompleto()">Ver registro completo</button>
+<button onclick="verUltimaExecucao()">Ver última execução</button>
+<button onclick="exportarRegistro()">Exportar registro</button>
+<button onclick="limparRegistro()">Limpar registro</button>
+</div>
+
+<div id="saidaPainel" class="output">Aguardando leitura do dashboard...</div>
+
+<div class="back" onclick="location.href='cofre_workspace.html'">← voltar ao workspace do Cofre</div>
+
+</div>
+
+<footer>
+Sistema Lapidar — Lapidar-Cofre<br>
+Dashboard técnico periférico sem violação da espinha dorsal
+</footer>
+
+<script>
+function atualizarDashboard(){
+
+const estadoCore = obterEstadoCore()
+const estadoMemoria = obterEstadoMemoria()
+const estadoRegistro = obterEstadoRegistro()
+
+document.getElementById("estadoNucleo").innerText =
+formatarEstadoNucleo(estadoCore)
+
+document.getElementById("estadoObra").innerText =
+formatarIdentificacaoObra(estadoCore)
+
+document.getElementById("estadoEstrutura").innerText =
+formatarEstrutura(estadoCore)
+
+document.getElementById("estadoPreTextuais").innerText =
+formatarPreTextuais(estadoCore)
+
+document.getElementById("estadoMemoria").innerText =
+formatarEstadoMemoria(estadoMemoria)
+
+document.getElementById("estadoRegistro").innerText =
+formatarEstadoRegistro(estadoRegistro)
+
+document.getElementById("estadoTextoLimpo").innerText =
+formatarTextoLimpo(estadoCore)
+
+document.getElementById("estadoInstitucional").innerText =
+formatarEstadoInstitucional(estadoCore, estadoRegistro)
+
+document.getElementById("saidaPainel").innerText =
+"Dashboard atualizado com sucesso."
+}
+
+function obterEstadoCore(){
+try{
+if(typeof CofreCore === "undefined"){
+return null
+}
+return CofreCore.status()
+}catch(e){
+return null
+}
+}
+
+function obterEstadoMemoria(){
+try{
+if(typeof CofreMemoria === "undefined"){
+return null
+}
+return JSON.parse(CofreMemoria.ver())
+}catch(e){
+return null
+}
+}
+
+function obterEstadoRegistro(){
+try{
+if(typeof CofreRegistro === "undefined"){
+return null
+}
+return CofreRegistro.status()
+}catch(e){
+return null
+}
+}
+
+function formatarEstadoNucleo(estado){
+if(!estado){
+return "CofreCore indisponível."
+}
+
+let linhas = []
+linhas.push("Obra carregada: " + (estado.estado.obraCarregada ? "sim" : "não"))
+linhas.push("Estrutura classificada: " + (estado.estado.estruturaClassificada ? "sim" : "não"))
+linhas.push("Metadados detectados: " + (estado.estado.metadadosDetectados ? "sim" : "não"))
+linhas.push("Pré-textuais separados: " + (estado.estado.preTextuaisSeparados ? "sim" : "não"))
+linhas.push("Status: " + (estado.memoria.status || "indefinido"))
+return linhas.join("\n")
+}
+
+function formatarIdentificacaoObra(estado){
+if(!estado){
+return "Identificação não disponível."
+}
+
+let linhas = []
+linhas.push("Título: " + (estado.memoria.titulo || "sem_titulo"))
+linhas.push("Subtítulo: " + (estado.memoria.subtitulo || "não detectado"))
+linhas.push("Autor: " + (estado.memoria.autor || "sem_autor"))
+linhas.push("Organizador: " + (estado.memoria.organizador || "não detectado"))
+linhas.push("Gênero detectado: " + (estado.memoria.generoDetectado || "não detectado"))
+return linhas.join("\n")
+}
+
+function formatarEstrutura(estado){
+if(!estado){
+return "Estrutura não disponível."
+}
+
+return "Estrutura detectada: " + (estado.memoria.estruturaDetectada || "não detectada")
+}
+
+function formatarPreTextuais(estado){
+if(!estado){
+return "Pré-textuais indisponíveis."
+}
+
+let linhas = []
+linhas.push("Prefácio: " + (estado.memoria.prefacio ? "detectado" : "não detectado"))
+linhas.push("Dedicatória: " + (estado.memoria.dedicatoria ? "detectada" : "não detectada"))
+linhas.push("Biografia: " + (estado.memoria.biografia ? "detectada" : "não detectada"))
+linhas.push("Ficha de dados: " + (estado.memoria.fichaDados ? "detectada" : "não detectada"))
+return linhas.join("\n")
+}
+
+function formatarEstadoMemoria(memoria){
+if(!memoria){
+return "Memória indisponível."
+}
+
+let linhas = []
+linhas.push("Título salvo: " + (memoria.titulo ? "sim" : "não"))
+linhas.push("Autor salvo: " + (memoria.autor ? "sim" : "não"))
+linhas.push("Estrutura salva: " + (memoria.estruturaDetectada ? "sim" : "não"))
+linhas.push("Texto original salvo: " + (memoria.textoOriginal ? "sim" : "não"))
+linhas.push("Texto limpo salvo: " + (memoria.textoLimpo ? "sim" : "não"))
+linhas.push("Última atualização: " + (memoria.ultimaAtualizacao || "não registrada"))
+return linhas.join("\n")
+}
+
+function formatarEstadoRegistro(registro){
+if(!registro){
+return "Registro indisponível."
+}
+
+let linhas = []
+linhas.push("Quantidade de execuções: " + (registro.quantidadeExecucoes || 0))
+linhas.push("Última atualização: " + (registro.ultimaAtualizacao || "não registrada"))
+return linhas.join("\n")
+}
+
+function formatarTextoLimpo(estado){
+if(!estado){
+return "Texto limpo indisponível."
+}
+
+const texto = estado.memoria.textoLimpo || ""
+if(!texto){
+return "Texto limpo ainda não disponível."
+}
+
+return texto.slice(0, 1200)
+}
+
+function formatarEstadoInstitucional(estado, registro){
+if(!estado){
+return "Estado institucional indisponível."
+}
+
+let linhas = []
+linhas.push("Ferramenta: Lapidar-Cofre")
+linhas.push("Posição: gateway do ecossistema")
+linhas.push("Pronto para o Andróide: " + (estado.memoria.textoLimpo ? "sim" : "parcial"))
+linhas.push("Eventos registrados: " + ((registro && registro.quantidadeExecucoes) ? registro.quantidadeExecucoes : 0))
+return linhas.join("\n")
+}
+
+function verResumoCompleto(){
+const resumo = {
+core: obterEstadoCore(),
+memoria: obterEstadoMemoria(),
+registro: obterEstadoRegistro()
+}
+document.getElementById("saidaPainel").innerText =
+JSON.stringify(resumo, null, 2)
+}
+
+function verCoreCompleto(){
+const core = obterEstadoCore()
+document.getElementById("saidaPainel").innerText =
+core ? JSON.stringify(core, null, 2) : "CofreCore indisponível."
+}
+
+function verMemoriaCompleta(){
+if(typeof CofreMemoria === "undefined"){
+document.getElementById("saidaPainel").innerText = "CofreMemoria indisponível."
+return
+}
+document.getElementById("saidaPainel").innerText =
+CofreMemoria.ver()
+}
+
+function verRegistroCompleto(){
+if(typeof CofreRegistro === "undefined"){
+document.getElementById("saidaPainel").innerText = "CofreRegistro indisponível."
+return
+}
+document.getElementById("saidaPainel").innerText =
+CofreRegistro.ver()
+}
+
+function verUltimaExecucao(){
+if(typeof CofreRegistro === "undefined"){
+document.getElementById("saidaPainel").innerText = "CofreRegistro indisponível."
+return
+}
+const ultima = CofreRegistro.ultimaExecucao()
+document.getElementById("saidaPainel").innerText =
+typeof ultima === "string" ? ultima : JSON.stringify(ultima, null, 2)
+}
+
+function exportarRegistro(){
+if(typeof CofreRegistro === "undefined"){
+document.getElementById("saidaPainel").innerText = "CofreRegistro indisponível."
+return
+}
+document.getElementById("saidaPainel").innerText =
+CofreRegistro.exportar()
+}
+
+function limparRegistro(){
+if(typeof CofreRegistro === "undefined"){
+document.getElementById("saidaPainel").innerText = "CofreRegistro indisponível."
+return
+}
+document.getElementById("saidaPainel").innerText =
+CofreRegistro.limpar()
+atualizarDashboard()
+}
+
+window.onload = atualizarDashboard
+</script>
+
+</body>
+</html>
