@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lapidar-Cofre — Workspace</title>
+
+<script src="cofre_core.js"></script>
+<script src="cofre_engine.js"></script>
+<script src="cofre_memoria.js"></script>
+<script src="cofre_registro.js"></script>
+
+<style>
+body{
+margin:0;
+font-family:Georgia, serif;
+background:linear-gradient(135deg,#f7f3ea,#e8dfcf);
+color:#2d2d2d;
+}
+
+header{
+background:#3e2f1c;
+color:white;
+padding:24px;
+text-align:center;
+font-size:28px;
+}
+
+.subtitulo{
+font-size:15px;
+margin-top:6px;
+opacity:0.9;
+}
+
+.container{
+max-width:1100px;
+margin:auto;
+padding:30px 20px;
+box-sizing:border-box;
+}
+
+.card{
+background:white;
+padding:24px;
+border-radius:12px;
+margin-bottom:22px;
+box-shadow:0 6px 18px rgba(0,0,0,0.08);
+}
+
+h2{
+margin-top:0;
+color:#3e2f1c;
+}
+
+label{
+display:block;
+margin:14px 0 8px;
+font-weight:bold;
+}
+
+input, textarea, button{
+font-family:Georgia, serif;
+font-size:15px;
+box-sizing:border-box;
+}
+
+input, textarea{
+width:100%;
+padding:12px;
+border-radius:8px;
+border:1px solid #ccc;
+}
+
+textarea{
+min-height:260px;
+resize:vertical;
+line-height:1.6;
+}
+
+button{
+background:#3e2f1c;
+color:white;
+border:none;
+padding:12px 20px;
+border-radius:6px;
+margin:8px 8px 0 0;
+cursor:pointer;
+}
+
+button:hover{
+background:#5b452b;
+}
+
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:18px;
+}
+
+@media (max-width: 860px){
+.grid{
+grid-template-columns:1fr;
+}
+}
+
+.bloco{
+margin-top:16px;
+padding:14px;
+border-radius:8px;
+background:#efe7d8;
+white-space:pre-wrap;
+line-height:1.6;
+min-height:120px;
+}
+
+.bloco strong{
+display:block;
+margin-bottom:8px;
+}
+
+.resultado{
+margin-top:20px;
+padding:20px;
+background:#faf7f0;
+border-left:6px solid #3e2f1c;
+border-radius:8px;
+white-space:pre-wrap;
+line-height:1.6;
+min-height:180px;
+}
+
+footer{
+text-align:center;
+margin-top:40px;
+font-size:13px;
+opacity:0.75;
+padding-bottom:20px;
+}
+
+.back{
+display:inline-block;
+margin-top:16px;
+color:#3e2f1c;
+cursor:pointer;
+font-weight:bold;
+}
+
+.back:hover{
+text-decoration:underline;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+Lapidar-Cofre
+<div class="subtitulo">
+Workspace de ingestão estrutural, limpeza editorial e preparação simbiótica da obra
+</div>
+</header>
+
+<div class="container">
+
+<div class="card">
+<h2>Entrada da obra</h2>
+
+<label for="tituloObra">Título</label>
+<input id="tituloObra" placeholder="Digite o título da obra">
+
+<label for="subtituloObra">Subtítulo</label>
+<input id="subtituloObra" placeholder="Digite o subtítulo, se houver">
+
+<label for="autorObra">Autor</label>
+<input id="autorObra" placeholder="Digite o nome do autor">
+
+<label for="organizadorObra">Organizador</label>
+<input id="organizadorObra" placeholder="Digite o nome do organizador, se houver">
+
+<label for="textoObra">Texto da obra</label>
+<textarea id="textoObra" placeholder="Cole aqui a obra para ingresso no Lapidar-Cofre..."></textarea>
+
+<button onclick="carregarObra()">Carregar obra no Cofre</button>
+<button onclick="executarLeituraInicial()">Executar leitura inicial</button>
+<button onclick="verEstado()">Ver estado do núcleo</button>
+<button onclick="resetarCore()">Resetar núcleo</button>
+<button onclick="preencherExemplo()">Preencher exemplo</button>
+</div>
+
+<div class="card">
+<h2>Resultado do Cofre</h2>
+
+<div class="grid">
+
+<div class="bloco">
+<strong>Estrutura detectada</strong>
+<div id="saidaEstrutura">Aguardando análise.</div>
+</div>
+
+<div class="bloco">
+<strong>Metadados detectados</strong>
+<div id="saidaMetadados">Aguardando análise.</div>
+</div>
+
+<div class="bloco">
+<strong>Pré-textuais separados</strong>
+<div id="saidaPreTextuais">Aguardando análise.</div>
+</div>
+
+<div class="bloco">
+<strong>Texto limpo inicial</strong>
+<div id="saidaTextoLimpo">Aguardando análise.</div>
+</div>
+
+</div>
+
+<div id="saidaTecnica" class="resultado">Nenhuma leitura executada ainda.</div>
+</div>
+
+<div class="card">
+<h2>Memória e registro</h2>
+
+<button onclick="salvarMemoria()">Salvar memória</button>
+<button onclick="carregarMemoria()">Carregar memória</button>
+<button onclick="verMemoria()">Ver memória</button>
+<button onclick="limparMemoria()">Limpar memória</button>
+
+<br>
+
+<button onclick="verRegistro()">Ver registro</button>
+<button onclick="exportarRegistro()">Exportar registro</button>
+<button onclick="limparRegistro()">Limpar registro</button>
+</div>
+
+<div class="back" onclick="location.href='cofre_index.html'">← voltar ao portal do Cofre</div>
+
+</div>
+
+<footer>
+Sistema Lapidar — Lapidar-Cofre<br>
+Gateway de entrada da obra no ecossistema editorial simbiótico
+</footer>
+
+<script>
+function carregarObra(){
+
+const pacote = {
+titulo: document.getElementById("tituloObra").value || "sem_titulo",
+subtitulo: document.getElementById("subtituloObra").value || null,
+autor: document.getElementById("autorObra").value || "sem_autor",
+organizador: document.getElementById("organizadorObra").value || null,
+textoBase: document.getElementById("textoObra").value
+}
+
+const resposta = CofreCore.carregarObra(pacote)
+document.getElementById("saidaTecnica").innerText = resposta
+}
+
+function executarLeituraInicial(){
+
+const resposta = CofreEngine.executarLeituraInicial()
+atualizarSaidas()
+document.getElementById("saidaTecnica").innerText = resposta
+}
+
+function atualizarSaidas(){
+
+const memoria = CofreCore.memoria
+
+document.getElementById("saidaEstrutura").innerText =
+memoria.estruturaDetectada || "Não detectada."
+
+document.getElementById("saidaMetadados").innerText =
+[
+"Título: " + (memoria.titulo || "indefinido"),
+"Subtítulo: " + (memoria.subtitulo || "não detectado"),
+"Autor: " + (memoria.autor || "indefinido"),
+"Organizador: " + (memoria.organizador || "não detectado"),
+"Gênero detectado: " + (memoria.generoDetectado || "não detectado")
+].join("\n")
+
+document.getElementById("saidaPreTextuais").innerText =
+[
+"Prefácio: " + (memoria.prefacio ? "detectado" : "não detectado"),
+"Dedicatória: " + (memoria.dedicatoria ? "detectada" : "não detectada"),
+"Biografia: " + (memoria.biografia ? "detectada" : "não detectada"),
+"Ficha de dados: " + (memoria.fichaDados ? "detectada" : "não detectada")
+].join("\n")
+
+document.getElementById("saidaTextoLimpo").innerText =
+(memoria.textoLimpo || "Não disponível.").slice(0, 1500)
+}
+
+function verEstado(){
+
+const estado = CofreCore.status()
+document.getElementById("saidaTecnica").innerText =
+JSON.stringify(estado, null, 2)
+}
+
+function resetarCore(){
+
+const resposta = CofreCore.resetar()
+
+document.getElementById("saidaEstrutura").innerText = "Aguardando análise."
+document.getElementById("saidaMetadados").innerText = "Aguardando análise."
+document.getElementById("saidaPreTextuais").innerText = "Aguardando análise."
+document.getElementById("saidaTextoLimpo").innerText = "Aguardando análise."
+document.getElementById("saidaTecnica").innerText = resposta
+}
+
+function salvarMemoria(){
+if(typeof CofreMemoria === "undefined"){
+document.getElementById("saidaTecnica").innerText = "CofreMemoria não carregada."
+return
+}
+document.getElementById("saidaTecnica").innerText = CofreMemoria.salvar()
+}
+
+function carregarMemoria(){
+if(typeof CofreMemoria === "undefined"){
+document.getElementById("saidaTecnica").innerText = "CofreMemoria não carregada."
+return
+}
+const resposta = CofreMemoria.carregar()
+atualizarSaidas()
+document.getElementById("saidaTecnica").innerText = resposta
+}
+
+function verMemoria(){
+if(typeof CofreMemoria === "undefined"){
+document.getElementById("saidaTecnica").innerText = "CofreMemoria não carregada."
+return
+}
+document.getElementById("saidaTecnica").innerText = CofreMemoria.ver()
+}
+
+function limparMemoria(){
+if(typeof CofreMemoria === "undefined"){
+document.getElementById("saidaTecnica").innerText = "CofreMemoria não carregada."
+return
+}
+document.getElementById("saidaTecnica").innerText = CofreMemoria.limpar()
+}
+
+function verRegistro(){
+if(typeof CofreRegistro === "undefined"){
+document.getElementById("saidaTecnica").innerText = "CofreRegistro não carregado."
+return
+}
+document.getElementById("saidaTecnica").innerText = CofreRegistro.ver()
+}
+
+function exportarRegistro(){
+if(typeof CofreRegistro === "undefined"){
+document.getElementById("saidaTecnica").innerText = "CofreRegistro não carregado."
+return
+}
+document.getElementById("saidaTecnica").innerText = CofreRegistro.exportar()
+}
+
+function limparRegistro(){
+if(typeof CofreRegistro === "undefined"){
+document.getElementById("saidaTecnica").innerText = "CofreRegistro não carregado."
+return
+}
+document.getElementById("saidaTecnica").innerText = CofreRegistro.limpar()
+}
+
+function preencherExemplo(){
+document.getElementById("tituloObra").value = "A Travessia da Sombra"
+document.getElementById("subtituloObra").value = "Memória, culpa e retorno"
+document.getElementById("autorObra").value = "Autor de Exemplo"
+document.getElementById("organizadorObra").value = ""
+document.getElementById("textoObra").value =
+"Prefácio\n\nEsta obra nasce do confronto entre memória e culpa.\n\nDedicatória\n\nAo leitor que ainda atravessa suas sombras.\n\nA Travessia da Sombra\n\nMemória, culpa e retorno\n\nAutor de Exemplo\n\nPrólogo\n\nEu sabia que a cidade escondia mais do que becos.\n\nCapítulo 1\n\nQuando voltei à casa antiga, o silêncio parecia respirar.\n\nCapítulo 2\n\nEle surgiu no fim do corredor como se sempre tivesse estado ali.\n\nBiografia\n\nAutor de Exemplo escreve ficção de atmosfera psicológica.\n\nFicha de Dados da Obra\n\nTítulo: A Travessia da Sombra"
+document.getElementById("saidaTecnica").innerText = "Exemplo carregado."
+}
+</script>
+
+</body>
+</html>
